@@ -1,0 +1,6 @@
+.katex {
+     font-size: 1.1em; /* 调整公式字体大小 */
+   }
+   .katex .base {
+     display: inline-block; /* 防止下标错位 */
+   }
