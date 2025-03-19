@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']], // 行内公式分隔符
+      displayMath: [['$$', '$$'], ['\\[', '\\]']], // 独立公式分隔符
+      processEscapes: true, // 允许使用 \ 转义字符
+      packages: {'[+]': ['amsmath', 'amssymb']} // 加载额外的宏包
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] // 跳过某些标签
+    }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <meta property="og:type" content="article">
+<meta property="og:title" content="Launch启动脚本(py)">
+<meta property="og:url" content="http://example.com/2025/03/17/launch%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC(py)/index.html">
+<meta property="og:site_name" content="404-ya">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-03-17T03:00:16.000Z">
+<meta property="article:modified_time" content="2025-03-19T15:32:55.443Z">
+<meta property="article:author" content="find">
+<meta property="article:tag" content="ROS2">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2025/03/17/launch%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC(py)/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Launch启动脚本(py) | 404-ya</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet" /><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style><link rel="stylesheet" href="/css/prism.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">404-ya</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/03/17/launch%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC(py)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="find">
+      <meta itemprop="description" content="三分钟热情，就有三分钟收获">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="404-ya">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Launch启动脚本(py)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-03-17 11:00:16" itemprop="dateCreated datePublished" datetime="2025-03-17T11:00:16+08:00">2025-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-03-19 23:32:55" itemprop="dateModified" datetime="2025-03-19T23:32:55+08:00">2025-03-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/ROS2/" itemprop="url" rel="index"><span itemprop="name">ROS2</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <html><head></head><body><p>ROS2可以用launch文件启动、管理多个节点<br> ROS2的launch文件推荐用python格式<br> 以下是一个简单示例 </p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> launch <span class="keyword">import</span> LaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch_ros.actions <span class="keyword">import</span> Node</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">	<span class="keyword">return</span> LaunchDescription([</span><br><span class="line">		<span class="comment"># 添加节点与配置</span></span><br><span class="line">		Node(</span><br><span class="line">			package = <span class="string">'包名'</span>,</span><br><span class="line">			executable = <span class="string">'可执行文件名'</span>, </span><br><span class="line">			name = <span class="string">'节点名称'</span>, <span class="comment"># 可选，覆盖原节点名</span></span><br><span class="line">			namespace = <span class="string">'命名空间'</span>, <span class="comment"># 可选，节点的命名空间</span></span><br><span class="line">			parameters = [        <span class="comment"># 可选，参数配置</span></span><br><span class="line">				{<span class="string">'parameters_name'</span> : value}, <span class="comment"># 直接传参</span></span><br><span class="line">			],</span><br><span class="line">			remapping = [</span><br><span class="line">				(<span class="string">'/before_topic'</span>,<span class="string">'/after_topic'</span>)</span><br><span class="line">			], <span class="comment"># 重映射主题与服务</span></span><br><span class="line">			output = <span class="string">'screen'</span> <span class="comment"># 输出到控制台，或'log'输出到日志文件</span></span><br><span class="line">		)</span><br><span class="line">	])</span><br></pre></td></tr></tbody></table></figure> 启动launch文件 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch &lt;package_name&gt; &lt;your_name&gt;.launch.py</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="如何用yaml传参">如何用yaml传参</h2>
+<h3 id="yaml文件格式">yaml文件格式</h3>
+<figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">my_node:</span> <span class="comment"># 节点名，一个文件中可以给多个节点传参</span></span><br><span class="line">	<span class="attr">ros__parameters:</span> <span class="comment"># 固定关键字，注意中间有两个下划线</span></span><br><span class="line">		<span class="attr">param1:</span> <span class="number">3.14</span></span><br><span class="line">		<span class="attr">param2:</span> <span class="string">"helloworld"</span></span><br></pre></td></tr></tbody></table></figure>
+<p>一般放置在功能包的config或params文件夹下</p>
+<h3 id="动态加载yaml文件示例">动态加载yaml文件示例</h3>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> launch <span class="keyword">import</span> LaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch_ros.actions <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> DeclareLaunchArgument</span><br><span class="line"><span class="keyword">from</span> launch.substitutions <span class="keyword">import</span> LaunchConfiguration</span><br><span class="line"><span class="keyword">from</span> ament_index_python.packages <span class="keyword">import</span> get_package_share_directory</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">    <span class="comment"># 声明启动参数</span></span><br><span class="line">    config_file_arg = DeclareLaunchArgument(<span class="comment"># 动态加载yaml文件,启动时选择合适的yaml文件</span></span><br><span class="line">        name = <span class="string">'config_file'</span>,</span><br><span class="line">        default_value = <span class="string">'default_params.yaml'</span>,<span class="comment"># 默认值</span></span><br><span class="line">        description = <span class="string">'Path to the YAML configuration file'</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取 YAML 文件路径</span></span><br><span class="line">    params_file = os.path.join(</span><br><span class="line">        get_package_share_directory(<span class="string">'my_package'</span>), <span class="comment"># 获取指定包的share目录</span></span><br><span class="line">        <span class="string">'config'</span>, <span class="comment"># 所在文件夹</span></span><br><span class="line">        LaunchConfiguration(<span class="string">'config_file'</span>)  <span class="comment"># yaml文件名，这里是动态加载 yaml文件</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> LaunchDescription([</span><br><span class="line">        config_file_arg,</span><br><span class="line">        Node(</span><br><span class="line">            package = <span class="string">'my_package'</span>,</span><br><span class="line">            executable = <span class="string">'my_node'</span>,</span><br><span class="line">            name = <span class="string">'my_node'</span>,</span><br><span class="line">            output = <span class="string">'screen'</span>,</span><br><span class="line">            parameters = [params_file]</span><br><span class="line">        ),</span><br><span class="line">    ])</span><br></pre></td></tr></tbody></table></figure>
+<p>启动launch文件 </p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch my_package my_launch.py config_file:=custom_params.yaml</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="补充动态传参">补充：动态传参</h3>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> DeclareLaunchArgument</span><br><span class="line"><span class="keyword">from</span> launch.substitutions <span class="keyword">import</span> LaunchConfiguration</span><br><span class="line"><span class="comment"># ... </span></span><br><span class="line">config_file_arg = DeclareLaunchArgument(</span><br><span class="line">        name = <span class="string">'动参名'</span>,</span><br><span class="line">        default_value = <span class="string">'动参默认值'</span>,</span><br><span class="line">        description = <span class="string">'描述，可选'</span></span><br><span class="line">    )</span><br><span class="line">LaunchConfiguration(<span class="string">'动参名'</span>) <span class="comment"># 调用动参</span></span><br></pre></td></tr></tbody></table></figure>
+<p>这样，我们就可以在启动时修改要传递的参数，即 </p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch my_package my_launch.py &lt;动参名&gt;:=&lt;动参值&gt;</span><br></pre></td></tr></tbody></table></figure> 这极大提高了launch文件的灵活性，而下面的实例中多次使用了这种方法，这当然是不必要的，<del>但ai就这么写的，就懒得改了</del><p></p>
+<h2 id="如何包含其他launch文件">如何包含其他launch文件</h2>
+<p>以下是main.launch.py包含上一个launch文件的一个实例 </p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> launch <span class="keyword">import</span> LaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> IncludeLaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch.launch_description_sources <span class="keyword">import</span> PythonLaunchDescriptionSource</span><br><span class="line"><span class="keyword">from</span> ament_index_python.packages <span class="keyword">import</span> get_package_share_directory</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">    <span class="comment"># 获取被包含 Launch 文件的路径</span></span><br><span class="line">    another_launch_file = os.path.join(</span><br><span class="line">        get_package_share_directory(<span class="string">'another_package'</span>),</span><br><span class="line">        <span class="string">'launch'</span>,</span><br><span class="line">        <span class="string">'another_launch.py'</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> LaunchDescription([</span><br><span class="line">        <span class="comment"># 包含另一个 Launch 文件并传递参数</span></span><br><span class="line">        IncludeLaunchDescription(</span><br><span class="line">	        <span class="comment"># 将指定的launch文件加载为一个LaunchDescription对象</span></span><br><span class="line">            PythonLaunchDescriptionSource(another_launch_file),</span><br><span class="line">            launch_arguments={<span class="string">'config_file'</span>: <span class="string">'custom_params.yaml'</span>}.items() <span class="comment"># 亦可以直接传参</span></span><br><span class="line">        ),</span><br><span class="line">    ])</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="如何根据条件启动节点">如何根据条件启动节点</h2>
+<h3 id="简单条件">简单条件</h3>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> launch <span class="keyword">import</span> LaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch_ros.actions <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> DeclareLaunchArgument</span><br><span class="line"><span class="keyword">from</span> launch.substitutions <span class="keyword">import</span> LaunchConfiguration</span><br><span class="line"><span class="keyword">from</span> launch.conditions <span class="keyword">import</span> IfCondition</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">    <span class="comment"># 声明启动参数</span></span><br><span class="line">    start_node_arg = DeclareLaunchArgument(</span><br><span class="line">        name=<span class="string">'start_node'</span>,</span><br><span class="line">        default_value=<span class="string">'true'</span>,</span><br><span class="line">        description=<span class="string">'Whether to start the node'</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取启动参数的值</span></span><br><span class="line">    start_node = LaunchConfiguration(<span class="string">'start_node'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> LaunchDescription([</span><br><span class="line">        start_node_arg,  <span class="comment"># 声明启动参数</span></span><br><span class="line">        Node(</span><br><span class="line">            package=<span class="string">'my_package'</span>,</span><br><span class="line">            executable=<span class="string">'my_node'</span>,</span><br><span class="line">            name=<span class="string">'my_node'</span>,</span><br><span class="line">            output=<span class="string">'screen'</span>,</span><br><span class="line">            condition=IfCondition(start_node)  <span class="comment"># 条件启动</span></span><br><span class="line">        ),</span><br><span class="line">    ])</span><br></pre></td></tr></tbody></table></figure>
+<p>启动launch文件 </p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动节点,不启动则false</span></span><br><span class="line">ros2 launch my_package my_launch.py start_node:=<span class="literal">true</span></span><br></pre></td></tr></tbody></table></figure> <code>IfCondition</code>会在<code>true</code>时启动节点，而另有函数<code>UnlessCondition</code>则会在<code>false</code>时启动节点。<p></p>
+<h3 id="复杂启动">复杂启动</h3>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> launch <span class="keyword">import</span> LaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch_ros.actions <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> DeclareLaunchArgument</span><br><span class="line"><span class="keyword">from</span> launch.substitutions <span class="keyword">import</span> LaunchConfiguration, PythonExpression</span><br><span class="line"><span class="keyword">from</span> launch.conditions <span class="keyword">import</span> IfCondition</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">    <span class="comment"># 声明启动参数</span></span><br><span class="line">    param1_arg = DeclareLaunchArgument(</span><br><span class="line">        name=<span class="string">'param1'</span>,</span><br><span class="line">        default_value=<span class="string">'value1'</span>,</span><br><span class="line">        description=<span class="string">'Description of param1'</span></span><br><span class="line">    )</span><br><span class="line">    param2_arg = DeclareLaunchArgument(</span><br><span class="line">        name=<span class="string">'param2'</span>,</span><br><span class="line">        default_value=<span class="string">'value2'</span>,</span><br><span class="line">        description=<span class="string">'Description of param2'</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取启动参数的值</span></span><br><span class="line">    param1 = LaunchConfiguration(<span class="string">'param1'</span>)</span><br><span class="line">    param2 = LaunchConfiguration(<span class="string">'param2'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 构建条件表达式</span></span><br><span class="line">    condition = PythonExpression([<span class="string">'"'</span>, param1, <span class="string">'" == "value1" and "'</span>, param2, <span class="string">'" == "value2"'</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> LaunchDescription([</span><br><span class="line">        param1_arg,  <span class="comment"># 声明启动参数</span></span><br><span class="line">        param2_arg,  <span class="comment"># 声明启动参数</span></span><br><span class="line">        Node(</span><br><span class="line">            package=<span class="string">'my_package'</span>,</span><br><span class="line">            executable=<span class="string">'my_node'</span>,</span><br><span class="line">            name=<span class="string">'my_node'</span>,</span><br><span class="line">            output=<span class="string">'screen'</span>,</span><br><span class="line">            condition=IfCondition(condition)  <span class="comment"># 条件启动</span></span><br><span class="line">        ),</span><br><span class="line">    ])</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="补充结合条件判断的信息打印">补充：结合条件判断的信息打印</h3>
+<p>launch文件中提供了<code>LogInfo</code>函数来打印信息,而<code>LogInfo</code>中提供了<code>condition</code>参量 </p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> LogInfo</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">	<span class="comment"># ...</span></span><br><span class="line">    <span class="keyword">return</span> LaunchDescription([</span><br><span class="line">        <span class="comment"># ...</span></span><br><span class="line">        LogInfo(</span><br><span class="line">            msg=<span class="string">'Debug mode is enabled.'</span>, <span class="comment"># 打印的信息</span></span><br><span class="line">            condition=IfCondition(condition)  <span class="comment"># 条件打印</span></span><br><span class="line">        ),</span><br><span class="line">    ])</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="如何在launch中执行外部命令">如何在launch中执行外部命令</h2>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> ExecuteProcess</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">        ExecuteProcess(</span><br><span class="line">            cmd=[<span class="string">'ros2'</span>, <span class="string">'run'</span>, <span class="string">'my_package'</span>, node1_name],  <span class="comment"># 这里的node1_name为动态参数</span></span><br><span class="line">            output=<span class="string">'screen'</span></span><br><span class="line">        ),</span><br></pre></td></tr></tbody></table></figure>
+<p><code>cmd</code>中为要执行的命令列表，我们亦可以将一个完整的命令作为一个字符串，但这需要在shell中实现 </p><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecuteProcess(</span><br><span class="line">            cmd=[<span class="string">'ros2 run my_package my_node1'</span>], </span><br><span class="line">            output=<span class="string">'screen'</span></span><br><span class="line">            shell = true <span class="comment"># 默认为false</span></span><br><span class="line">        ),</span><br><span class="line">ExecuteProcess(</span><br><span class="line">            cmd=[<span class="string">'./my_bash.sh'</span>], </span><br><span class="line">            output=<span class="string">'screen'</span></span><br><span class="line">            shell = true </span><br><span class="line">        ),</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="如何统一管理多节点">如何统一管理多节点</h2>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> launch <span class="keyword">import</span> LaunchDescription</span><br><span class="line"><span class="keyword">from</span> launch_ros.actions <span class="keyword">import</span> Node</span><br><span class="line"><span class="keyword">from</span> launch.actions <span class="keyword">import</span> GroupAction, DeclareLaunchArgument</span><br><span class="line"><span class="keyword">from</span> launch.conditions <span class="keyword">import</span> IfCondition</span><br><span class="line"><span class="keyword">from</span> launch.substitutions <span class="keyword">import</span> LaunchConfiguration</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_launch_description</span>():</span><br><span class="line">    <span class="comment"># 声明启动参数</span></span><br><span class="line">    start_group_arg = DeclareLaunchArgument(</span><br><span class="line">        name=<span class="string">'start_group'</span>,</span><br><span class="line">        default_value=<span class="string">'true'</span>,</span><br><span class="line">        description=<span class="string">'Whether to start the group'</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取启动参数的值</span></span><br><span class="line">    start_group = LaunchConfiguration(<span class="string">'start_group'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> LaunchDescription([</span><br><span class="line">        start_group_arg,  <span class="comment"># 声明启动参数</span></span><br><span class="line">        GroupAction(</span><br><span class="line">            actions=[</span><br><span class="line">                Node(</span><br><span class="line">                    package=<span class="string">'my_package'</span>,</span><br><span class="line">                    executable=<span class="string">'my_node1'</span>,</span><br><span class="line">                    name=<span class="string">'my_node1'</span>,</span><br><span class="line">                    output=<span class="string">'screen'</span></span><br><span class="line">                ),</span><br><span class="line">                Node(</span><br><span class="line">                    package=<span class="string">'my_package'</span>,</span><br><span class="line">                    executable=<span class="string">'my_node2'</span>,</span><br><span class="line">                    name=<span class="string">'my_node2'</span>,</span><br><span class="line">                    output=<span class="string">'screen'</span></span><br><span class="line">                ),</span><br><span class="line">            ],</span><br><span class="line">            condition=IfCondition(start_group),  <span class="comment"># 统一条件</span></span><br><span class="line">            namespace=<span class="string">'my_namespace'</span>,           <span class="comment"># 统一命名空间</span></span><br><span class="line">            scoped=<span class="literal">True</span>                         <span class="comment"># 作用域限定在组内</span></span><br><span class="line">        ),</span><br><span class="line">    ])</span><br></pre></td></tr></tbody></table></figure>
+</body></html>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ROS2/" rel="tag"># ROS2</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/09/%E7%BA%BF%E6%80%A7%E7%A9%BA%E9%97%B4/" rel="prev" title="线性空间">
+      <i class="fa fa-chevron-left"></i> 线性空间
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%94%A8yaml%E4%BC%A0%E5%8F%82"><span class="nav-number">1.</span> <span class="nav-text">如何用yaml传参</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#yaml%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">yaml文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BDyaml%E6%96%87%E4%BB%B6%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">动态加载yaml文件示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E5%8A%A8%E6%80%81%E4%BC%A0%E5%8F%82"><span class="nav-number">1.3.</span> <span class="nav-text">补充：动态传参</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%8C%85%E5%90%AB%E5%85%B6%E4%BB%96launch%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">如何包含其他launch文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%A0%B9%E6%8D%AE%E6%9D%A1%E4%BB%B6%E5%90%AF%E5%8A%A8%E8%8A%82%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">如何根据条件启动节点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%9D%A1%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">简单条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%90%AF%E5%8A%A8"><span class="nav-number">3.2.</span> <span class="nav-text">复杂启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E5%85%85%E7%BB%93%E5%90%88%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD%E7%9A%84%E4%BF%A1%E6%81%AF%E6%89%93%E5%8D%B0"><span class="nav-number">3.3.</span> <span class="nav-text">补充：结合条件判断的信息打印</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8launch%E4%B8%AD%E6%89%A7%E8%A1%8C%E5%A4%96%E9%83%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">4.</span> <span class="nav-text">如何在launch中执行外部命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%BB%9F%E4%B8%80%E7%AE%A1%E7%90%86%E5%A4%9A%E8%8A%82%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">如何统一管理多节点</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="find"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">find</p>
+  <div class="site-description" itemprop="description">三分钟热情，就有三分钟收获</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; Sun Feb 09 2025 08:00:00 GMT+0800 (中国标准时间) – 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">find</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">15k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">13 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/tororo.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true}});</script></body>
