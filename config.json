@@ -1,0 +1,52 @@
+{
+  "site": {
+    "title": "Luv(sic) Notes",
+    "brand": "Luv(sic) Notes",
+    "tagline": "A blog that breathes like late-night jazz.",
+    "description": "Quiet essays, proofs, and code fragments. Written in Obsidian, rendered with patience.",
+    "author": "Your Name",
+    "email": "you@example.com",
+    "url": "https://example.com",
+    "footer": "Written in quiet rooms, rendered with patience."
+  },
+
+  "nav": [
+    { "label": "Notes",   "href": "index.html" },
+    { "label": "Archive", "href": "index.html#archive" },
+    { "label": "About",   "href": "about.html" }
+  ],
+
+  "categories": [
+    {
+      "id": "essay",
+      "name": "Essay",
+      "description": "Long-form writing on memory, music, and minor obsessions.",
+      "accent": "accent"
+    },
+    {
+      "id": "math",
+      "name": "Math",
+      "description": "Small proofs, rough derivations, and formula doodles.",
+      "accent": "accent"
+    },
+    {
+      "id": "code",
+      "name": "Code",
+      "description": "Notebook fragments and late-night experiments.",
+      "accent": "amber"
+    },
+    {
+      "id": "notes",
+      "name": "Notes",
+      "description": "Loose observations and reading marginalia.",
+      "accent": "amber"
+    }
+  ],
+
+  "defaults": {
+    "theme": "auto",
+    "postsPerPage": 12,
+    "showReadingTime": true,
+    "showTags": true
+  }
+}

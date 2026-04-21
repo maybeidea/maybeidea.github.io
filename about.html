@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Luv(sic) Notes</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link id="hljs-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css" />
+  <link id="hljs-dark"  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css" disabled />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar" id="site-topbar"></header>
+
+    <article class="article-shell">
+      <header class="article-head">
+        <div class="article-meta">
+          <span class="category-chip">About</span>
+        </div>
+        <h1 id="about-h1">About this notebook</h1>
+        <p id="about-lede"></p>
+      </header>
+      <div class="prose">
+        <p>
+          This is a small, quiet blog. It lives as a set of plain Markdown files in a
+          folder, rendered by a single-page JavaScript front-end. There is no database,
+          no build step, and no tracking.
+        </p>
+        <p>
+          The visual language tries to stay out of the way: warm paper tones by day,
+          deep amber nights, glass-panel code blocks, and formulas set with enough
+          space to breathe.
+        </p>
+        <h2>How to read this site</h2>
+        <ul>
+          <li>Browse by category using the pills on the home page.</li>
+          <li>Toggle light/dark with the button in the top right.</li>
+          <li>Click a <span class="wiki-link">[[wiki-link]]</span> to jump between
+            related notes.</li>
+        </ul>
+        <h2>Contact</h2>
+        <p id="about-contact"></p>
+      </div>
+    </article>
+
+    <footer class="site-footer" id="site-footer"></footer>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script>
+    (async function () {
+      const config = await LuvsicBlog.loadConfig();
+      LuvsicBlog.applyTheme(
+        LuvsicBlog.resolveInitialTheme((config.defaults && config.defaults.theme) || "auto")
+      );
+      LuvsicBlog.renderTopbar("#site-topbar", config);
+      LuvsicBlog.renderFooter("#site-footer", config);
+
+      document.getElementById("about-h1").textContent = `About ${config.site.title}`;
+      document.getElementById("about-lede").textContent = config.site.description;
+      const contact = document.getElementById("about-contact");
+      if (config.site.email) {
+        contact.innerHTML = `Reach out at <a href="mailto:${LuvsicBlog.escapeHtml(config.site.email)}">${LuvsicBlog.escapeHtml(config.site.email)}</a>.`;
+      } else {
+        contact.textContent = "No contact address configured.";
+      }
+    })();
+  </script>
+</body>
+</html>

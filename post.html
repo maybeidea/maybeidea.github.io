@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading… — Luv(sic) Notes</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+
+  <!-- Highlight.js 双主题 -->
+  <link id="hljs-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css" />
+  <link id="hljs-dark"  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css" disabled />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar" id="site-topbar"></header>
+
+    <article class="article-shell" id="article-shell">
+      <div class="loading-state">Loading note…</div>
+    </article>
+
+    <nav class="post-nav" id="post-nav" aria-label="Adjacent notes"></nav>
+
+    <footer class="site-footer" id="site-footer"></footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/plaintext.min.js"></script>
+  <script src="assets/app.js"></script>
+
+  <script>
+    (async function () {
+      const $ = (s) => document.querySelector(s);
+      const { escapeHtml, formatDate, slugify } = LuvsicBlog;
+
+      const params = new URLSearchParams(location.search);
+      const slug = params.get("slug");
+
+      try {
+        const [config, postsIndex] = await Promise.all([
+          LuvsicBlog.loadConfig(),
+          LuvsicBlog.loadPostsIndex()
+        ]);
+
+        // Theme
+        LuvsicBlog.applyTheme(
+          LuvsicBlog.resolveInitialTheme((config.defaults && config.defaults.theme) || "auto")
+        );
+        LuvsicBlog.renderTopbar("#site-topbar", config);
+        LuvsicBlog.renderFooter("#site-footer", config);
+
+        const posts = postsIndex.posts;
+        const idx = posts.findIndex((p) => p.slug === slug);
+        if (idx === -1) {
+          throw new Error(`Note not found: ${slug}`);
+        }
+        const post = posts[idx];
+
+        // title
+        document.title = `${post.title} — ${config.site.title}`;
+
+        // build a title-slug map so wiki-links can resolve to real posts
+        const postsBySlugifiedTitle = {};
+        posts.forEach((p) => { postsBySlugifiedTitle[slugify(p.title)] = p.slug; });
+
+        // fetch markdown
+        const mdText = await LuvsicBlog.loadText(`posts/${post.file}`);
+        const { data: fm, body } = LuvsicBlog.parseFrontmatter(mdText);
+
+        // merge metadata: frontmatter wins for display title if present
+        const displayTitle = fm.title || post.title;
+        const displayDate  = fm.date  || post.date;
+        const cat = (config.categories || []).find((c) => c.id === post.category);
+
+        // render article head
+        const tags = (fm.tags && Array.isArray(fm.tags) ? fm.tags : (post.tags || []))
+          .map((t) => `<span class="tag-chip">#${escapeHtml(t)}</span>`).join("");
+
+        const accentClass = cat && cat.accent === "amber" ? "accent-amber" : "";
+
+        $("#article-shell").innerHTML = `
+          <header class="article-head">
+            <div class="article-meta">
+              <span class="category-chip ${accentClass}">${escapeHtml(cat ? cat.name : post.category || "Note")}</span>
+              <span class="dot" aria-hidden="true"></span>
+              <time datetime="${escapeHtml(displayDate)}">${formatDate(displayDate)}</time>
+              ${post.readingTime ? `<span class="dot" aria-hidden="true"></span><span>${escapeHtml(String(post.readingTime))} min read</span>` : ""}
+            </div>
+            <h1>${escapeHtml(displayTitle)}</h1>
+            ${tags ? `<div class="article-tags">${tags}</div>` : ""}
+          </header>
+          <div class="prose" id="prose-body"></div>
+        `;
+
+        // render markdown → HTML
+        const html = LuvsicBlog.renderMarkdown(body, { postsBySlugifiedTitle });
+        $("#prose-body").innerHTML = html;
+
+        // enhance (highlight + KaTeX + copy bindings)
+        LuvsicBlog.enhanceRenderedContent($("#article-shell"));
+
+        // prev / next nav
+        const prev = posts[idx + 1]; // older
+        const next = posts[idx - 1]; // newer
+
+        const prevHtml = prev
+          ? `<a href="post.html?slug=${encodeURIComponent(prev.slug)}">
+               <span class="nav-label">← Older</span>
+               <span class="nav-title">${escapeHtml(prev.title)}</span>
+             </a>`
+          : `<div class="placeholder"></div>`;
+        const nextHtml = next
+          ? `<a class="next-post" href="post.html?slug=${encodeURIComponent(next.slug)}">
+               <span class="nav-label">Newer →</span>
+               <span class="nav-title">${escapeHtml(next.title)}</span>
+             </a>`
+          : `<div class="placeholder"></div>`;
+
+        $("#post-nav").innerHTML = prevHtml + nextHtml;
+
+      } catch (err) {
+        console.error(err);
+        $("#article-shell").innerHTML = `
+          <div class="error-state">
+            <p style="font-size:1.1rem; margin-bottom:10px;">Could not load this note.</p>
+            <p style="font-size:0.92rem;">
+              ${escapeHtml(err.message || "Unknown error")}<br />
+              Make sure you're serving via HTTP (e.g. <code>python3 -m http.server</code>)
+              and that <code>posts/index.json</code> contains a matching <code>slug</code>.
+            </p>
+            <p style="margin-top:14px;"><a href="index.html">← Back to notes</a></p>
+          </div>
+        `;
+      }
+    })();
+  </script>
+</body>
+</html>

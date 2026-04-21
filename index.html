@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luv(sic) Notes</title>
+  <meta name="description" content="Quiet essays, proofs, and code fragments. Written in Obsidian, rendered with patience." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+
+  <!-- Highlight.js 双主题 -->
+  <link id="hljs-light" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-light.min.css" />
+  <link id="hljs-dark"  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css" disabled />
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar" id="site-topbar"></header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow" id="hero-eyebrow">Quiet essays / math / code / memory</span>
+          <h1 id="hero-title"></h1>
+          <p id="hero-desc"></p>
+        </div>
+        <aside class="hero-note">
+          <div class="label">Intro</div>
+          <p id="hero-note-desc"></p>
+        </aside>
+      </div>
+    </section>
+
+    <div class="ambient-line"></div>
+
+    <!-- Posts -->
+    <section class="posts" id="posts">
+      <div class="section-title">
+        <h2 id="posts-title">Recent Notes</h2>
+        <span id="posts-sub"></span>
+      </div>
+
+      <!-- 分类胶囊筛选条 -->
+      <div class="category-bar" id="category-bar" role="tablist" aria-label="Filter by category"></div>
+
+      <!-- 文章卡片网格 -->
+      <div class="post-grid" id="post-grid">
+        <div class="loading-state" style="grid-column: 1 / -1;">Loading notes…</div>
+      </div>
+    </section>
+
+    <footer class="site-footer" id="site-footer"></footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/javascript.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/python.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/bash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/css.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/plaintext.min.js"></script>
+  <script src="assets/app.js"></script>
+
+  <script>
+    (async function () {
+      const $ = (s) => document.querySelector(s);
+      const { escapeHtml, formatDate } = LuvsicBlog;
+
+      // ===== URL state =====
+      function getFilterFromURL() {
+        const params = new URLSearchParams(location.search);
+        return params.get("category") || "all";
+      }
+      function setFilterInURL(id) {
+        const params = new URLSearchParams(location.search);
+        if (id === "all") params.delete("category");
+        else params.set("category", id);
+        const qs = params.toString();
+        const newUrl = location.pathname + (qs ? "?" + qs : "") + location.hash;
+        history.replaceState(null, "", newUrl);
+      }
+
+      try {
+        // ===== load config + posts =====
+        const [config, postsIndex] = await Promise.all([
+          LuvsicBlog.loadConfig(),
+          LuvsicBlog.loadPostsIndex()
+        ]);
+
+        document.title = config.site.title;
+
+        // theme
+        LuvsicBlog.applyTheme(
+          LuvsicBlog.resolveInitialTheme((config.defaults && config.defaults.theme) || "auto")
+        );
+
+        // topbar + footer
+        LuvsicBlog.renderTopbar("#site-topbar", config);
+        LuvsicBlog.renderFooter("#site-footer", config);
+
+        // hero
+        $("#hero-title").textContent = config.site.tagline;
+        $("#hero-desc").textContent = config.site.description;
+        $("#hero-note-desc").textContent =
+          "Warm minimalism by day, deep amber nights — muted typography, glass-panel code blocks, and mathematical notation treated as part of the page rhythm, not as an interruption.";
+
+        const posts = postsIndex.posts;
+        $("#posts-sub").textContent = `${posts.length} notes · filter by category below`;
+
+        // ===== category pills =====
+        const categories = config.categories || [];
+        const catById = {};
+        categories.forEach((c) => { catById[c.id] = c; });
+
+        function countFor(id) {
+          return id === "all" ? posts.length : posts.filter((p) => p.category === id).length;
+        }
+
+        function renderPills(activeId) {
+          const pills = [{ id: "all", name: "All", accent: "accent" }].concat(categories);
+          $("#category-bar").innerHTML = pills.map((c) => {
+            const classes = ["category-pill"];
+            if (c.accent === "amber") classes.push("accent-amber");
+            if (c.id === activeId) classes.push("active");
+            return `<button type="button" class="${classes.join(" ")}" data-cat="${escapeHtml(c.id)}" role="tab" aria-selected="${c.id === activeId}">
+              ${escapeHtml(c.name)}<span class="count">${countFor(c.id)}</span>
+            </button>`;
+          }).join("");
+        }
+
+        // ===== card grid =====
+        function renderCards(activeId) {
+          const list = activeId === "all"
+            ? posts
+            : posts.filter((p) => p.category === activeId);
+
+          if (!list.length) {
+            $("#post-grid").innerHTML =
+              `<div class="empty-state" style="grid-column: 1 / -1;">No notes in this category yet.</div>`;
+            return;
+          }
+
+          $("#post-grid").innerHTML = list.map((post) => {
+            const cat = catById[post.category];
+            const catName = cat ? cat.name : post.category;
+            const accentClass = cat && cat.accent === "amber" ? "accent-amber" : "";
+            const formulaHtml = post.featuredFormula
+              ? `<div class="formula-preview">\\[${post.featuredFormula}\\]</div>`
+              : "";
+            const tagsHtml = (post.tags && post.tags.length)
+              ? `<div class="tags-line">${post.tags.slice(0, 3).map((t) =>
+                  `<span class="tag-chip">#${escapeHtml(t)}</span>`
+                ).join("")}</div>`
+              : "";
+
+            return `
+              <a class="post-card" href="post.html?slug=${encodeURIComponent(post.slug)}">
+                <div class="post-meta">
+                  <span class="category-chip ${accentClass}">${escapeHtml(catName)}</span>
+                  <span>${formatDate(post.date)}</span>
+                  ${post.readingTime ? `<span>${escapeHtml(String(post.readingTime))} min</span>` : ""}
+                </div>
+                <h3>${escapeHtml(post.title)}</h3>
+                <p>${escapeHtml(post.excerpt || "")}</p>
+                ${formulaHtml}
+                ${tagsHtml}
+                <span class="read-more">Read note →</span>
+              </a>
+            `;
+          }).join("");
+
+          // render KaTeX in cards
+          LuvsicBlog.enhanceRenderedContent($("#post-grid"));
+        }
+
+        // ===== wiring =====
+        function setActive(id) {
+          renderPills(id);
+          renderCards(id);
+          setFilterInURL(id);
+        }
+
+        // pill clicks (delegated)
+        $("#category-bar").addEventListener("click", (e) => {
+          const btn = e.target.closest(".category-pill");
+          if (!btn) return;
+          setActive(btn.dataset.cat);
+        });
+
+        // initial
+        setActive(getFilterFromURL());
+      } catch (err) {
+        console.error(err);
+        $("#post-grid").innerHTML =
+          `<div class="error-state" style="grid-column: 1 / -1;">
+            Failed to load notes. Serve this folder from a local HTTP server
+            (e.g. <code>python3 -m http.server</code>) — opening the file
+            directly via <code>file://</code> won't work.
+          </div>`;
+      }
+    })();
+  </script>
+</body>
+</html>
