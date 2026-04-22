@@ -4,10 +4,7 @@ date: 2026-04-06
 category: code
 tags: [javascript, pattern, jazz]
 ---
-
-There is a specific kind of rain — thin, persistent, barely audible — that
-only exists between about 01:30 and 03:00. I wanted to write a program that
-matched its pacing.
+或者直接把 DevTools → Elements 选中一个中文字的 Computed 面板里 `font-family` 那一行截图发我——这一行会直接告诉我"最终实际用的是什么字体"，我立刻就能定位到问题。
 
 ## The sequencer
 

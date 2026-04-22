@@ -110,6 +110,23 @@
   --radius-sm: 12px;
   --content-w: 760px;
   --transition: 260ms cubic-bezier(0.4, 0, 0.2, 1);
+   /* ===== 字体栈 — 中文优先 =====
+     想换风格？只改 --font-serif 那一行：
+       A. 楷体 / 笔记本感（默认）：LXGW WenKai Screen 在前
+       B. 宋体 / 书页感：把 "Noto Serif SC" 提到最前
+   */
+  --font-serif:
+  "Noto Serif SC", Lora,
+  "LXGW WenKai Screen", "LXGW WenKai",
+  "Source Han Serif SC", Georgia, serif;
+
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei",
+    "Hiragino Sans GB", sans-serif;
+
+  --font-mono:
+    "JetBrains Mono", "SFMono-Regular", Consolas, Menlo, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -117,8 +134,7 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   color: var(--text);
   background:
     radial-gradient(circle at top left, var(--bg-gradient-1), transparent 28%),
@@ -289,7 +305,7 @@ a:hover { opacity: 0.82; }
 
 .hero h1 {
   margin: 0;
-  font-family: Lora, "Iowan Old Style", Georgia, serif;
+  font-family: var(--font-serif);
   font-weight: 500;
   font-size: clamp(2.5rem, 5vw, 5rem);
   line-height: 1.06;
@@ -304,7 +320,7 @@ a:hover { opacity: 0.82; }
   max-width: 62ch;
   color: var(--muted);
   font-size: 1.06rem;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
 }
 
 .hero-note {
@@ -329,7 +345,7 @@ a:hover { opacity: 0.82; }
   color: var(--text-soft);
   font-size: 0.98rem;
   line-height: 1.85;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
 }
 
 .ambient-line {
@@ -354,7 +370,7 @@ a:hover { opacity: 0.82; }
 }
 .section-title h2 {
   margin: 0;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-size: clamp(1.6rem, 2.2vw, 2.2rem);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -502,7 +518,7 @@ a:hover { opacity: 0.82; }
 
 .post-card h3 {
   margin: 0 0 12px;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-size: 1.42rem;
   font-weight: 500;
   line-height: 1.22;
@@ -516,7 +532,7 @@ a:hover { opacity: 0.82; }
   margin: 0 0 16px;
   color: var(--muted);
   font-size: 0.98rem;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   flex: 1;
 }
 
@@ -554,7 +570,7 @@ a:hover { opacity: 0.82; }
   border-radius: 999px;
   padding: 2px 9px;
   font-size: 0.7rem;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-sans);
   letter-spacing: 0.04em;
   background: color-mix(in srgb, var(--paper) 60%, transparent);
 }
@@ -563,7 +579,7 @@ a:hover { opacity: 0.82; }
   padding: 60px 20px;
   text-align: center;
   color: var(--muted);
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-style: italic;
   border: 1px dashed var(--line);
   border-radius: var(--radius-lg);
@@ -593,7 +609,7 @@ a:hover { opacity: 0.82; }
 
 .article-head h1 {
   margin: 0 0 14px;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-weight: 500;
   font-size: clamp(2rem, 3vw, 3rem);
   line-height: 1.14;
@@ -664,7 +680,7 @@ a:hover { opacity: 0.82; }
 .post-nav .nav-title {
   display: block;
   color: var(--text);
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-size: 1.08rem;
   line-height: 1.35;
 }
@@ -686,7 +702,7 @@ a:hover { opacity: 0.82; }
 }
 
 .prose h2, .prose h3, .prose h4 {
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.25;
@@ -700,7 +716,7 @@ a:hover { opacity: 0.82; }
 .prose p, .prose li {
   color: var(--text-soft);
   font-size: 1.02rem;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
 }
 .prose strong { color: var(--text); }
 .prose em { color: var(--text-soft); }
@@ -727,7 +743,7 @@ a:hover { opacity: 0.82; }
   border-radius: 999px;
   padding: 0.15em 0.65em;
   white-space: nowrap;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.92em;
 }
 .wiki-link:hover { background-size: 0 !important; }
@@ -747,7 +763,7 @@ a:hover { opacity: 0.82; }
   letter-spacing: 0.1em;
   margin-bottom: 6px;
   font-weight: 700;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-sans);
 }
 .callout-body > :first-child { margin-top: 0; }
 .callout-body > :last-child { margin-bottom: 0; }
@@ -785,7 +801,7 @@ a:hover { opacity: 0.82; }
   padding: 12px 14px;
   border-bottom: 1px solid var(--line);
   font-size: 0.95rem;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-sans);
   color: var(--text-soft);
 }
 .prose th {
@@ -865,7 +881,7 @@ a:hover { opacity: 0.82; }
   cursor: pointer;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-sans);
   transition: color var(--transition), border-color var(--transition), transform var(--transition);
 }
 .copy-btn:hover, .copy-code:hover {
@@ -886,7 +902,7 @@ a:hover { opacity: 0.82; }
 
 .code-frame code, .code-wrap code,
 .code-frame pre code, .code-wrap pre code {
-  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, Menlo, monospace;
+  font-family: var(--font-mono);
   background: transparent !important;
   color: var(--text);
 }
@@ -895,7 +911,7 @@ a:hover { opacity: 0.82; }
 
 /* 内联 code */
 .prose :not(pre) > code {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 0.88em;
   padding: 0.12em 0.42em;
   border-radius: 6px;
@@ -909,7 +925,7 @@ blockquote {
   padding: 0.2rem 0 0.2rem 1rem;
   border-left: 2px solid var(--accent-border);
   color: var(--muted);
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-style: italic;
 }
 
@@ -919,7 +935,7 @@ blockquote {
   border-top: 1px dashed var(--line);
   color: var(--muted);
   font-size: 0.92rem;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
 }
 .footnotes ol { padding-left: 20px; }
 .footnotes li { margin-bottom: 0.5rem; color: var(--muted); }
@@ -943,7 +959,7 @@ blockquote {
   padding: 60px 20px;
   text-align: center;
   color: var(--muted);
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-style: italic;
 }
 .error-state { color: var(--amber); }
@@ -958,7 +974,7 @@ footer.site-footer {
   text-align: center;
   color: var(--muted-2);
   font-size: 0.9rem;
-  font-family: Lora, Georgia, serif;
+  font-family: var(--font-serif);
   font-style: italic;
 }
 

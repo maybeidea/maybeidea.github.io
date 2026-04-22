@@ -1,12 +1,12 @@
 {
   "site": {
-    "title": "Luv(sic) Notes",
-    "brand": "Luv(sic) Notes",
-    "tagline": "A blog that breathes like late-night jazz.",
-    "description": "Quiet essays, proofs, and code fragments. Written in Obsidian, rendered with patience.",
-    "author": "Your Name",
-    "email": "you@example.com",
-    "url": "https://example.com",
+    "title": "Luv Notes",
+    "brand": "Luv Notes",
+    "tagline": "Welcome",
+    "description": "Some essays, proofs, and code fragments. Written in Obsidian.",
+    "author": "maybeidea",
+    "email": "1924192427@qq.com",
+    "url": "https://maybeidea.github.io",
     "footer": "Written in quiet rooms, rendered with patience."
   },
 
