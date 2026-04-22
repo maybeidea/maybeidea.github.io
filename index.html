@@ -36,10 +36,10 @@
           <h1 id="hero-title"></h1>
           <p id="hero-desc"></p>
         </div>
-        <aside class="hero-note">
+        <!-- <aside class="hero-note">
           <div class="label">Intro</div>
           <p id="hero-note-desc"></p>
-        </aside>
+        </aside> -->
       </div>
     </section>
 
@@ -117,8 +117,8 @@
         // hero
         $("#hero-title").textContent = config.site.tagline;
         $("#hero-desc").textContent = config.site.description;
-        $("#hero-note-desc").textContent =
-          "Warm minimalism by day, deep amber nights — muted typography, glass-panel code blocks, and mathematical notation treated as part of the page rhythm, not as an interruption.";
+        // $("#hero-note-desc").textContent =
+        //   "笔记常常在深夜里听着歌完成，希望我的随着音乐符号的律动——柔和的字体、简洁的代码块和数学符号被视为页面节奏的一部分，而不是一种干扰。";
 
         const posts = postsIndex.posts;
         $("#posts-sub").textContent = `${posts.length} notes · filter by category below`;

@@ -288,7 +288,7 @@ a:hover { opacity: 0.82; }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.3fr 0.7fr;
+  grid-template-columns: 1fr;
   gap: 32px;
   align-items: end;
 }
