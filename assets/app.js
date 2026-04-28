@@ -31,7 +31,6 @@
       if (saved === "light" || saved === "dark") return saved;
     } catch (_) {}
     if (defaultTheme === "dark" || defaultTheme === "light") return defaultTheme;
-    // "auto" or anything else → respect OS
     if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
       return "dark";
     }
@@ -75,11 +74,107 @@
   async function loadConfig() {
     return loadJSON("config.json");
   }
+
+  /* ------------------------------------------------------------
+     Posts index — supports two formats:
+       New: { posts: ["a.md", "b.md"] }   → metadata derived from frontmatter
+       Old: { posts: [{slug, file, title, ...}] } → used as-is
+     ------------------------------------------------------------ */
   async function loadPostsIndex() {
     const data = await loadJSON("posts/index.json");
-    // sort by date desc
-    data.posts.sort((a, b) => (a.date < b.date ? 1 : -1));
-    return data;
+
+    let fileNames;
+    if (Array.isArray(data.posts) && data.posts.length > 0
+        && typeof data.posts[0] === "string") {
+      fileNames = data.posts;
+    } else {
+      if (Array.isArray(data.posts)) {
+        data.posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+      }
+      return data;
+    }
+
+    const posts = await Promise.all(fileNames.map(async (file) => {
+      try {
+        const text = await loadText(`posts/${encodeURIComponent(file)}`);
+        const { data: fm, body } = parseFrontmatter(text);
+        return derivePostMeta(file, fm, body);
+      } catch (err) {
+        console.warn(`[posts] skip ${file}:`, err.message);
+        return null;
+      }
+    }));
+
+    const valid = posts.filter(Boolean);
+    valid.sort((a, b) => (a.date < b.date ? 1 : -1));
+    return { posts: valid };
+  }
+
+  function derivePostMeta(file, fm, body) {
+    const stem = file.replace(/\.md$/i, "");
+    const tags = Array.isArray(fm.tags) ? fm.tags : (fm.tags ? [fm.tags] : []);
+
+    const excerpt = (fm.excerpt || extractFirstParagraph(body) || "").trim();
+
+    let readingTime = Number(fm.readingTime);
+    if (!readingTime || isNaN(readingTime)) readingTime = estimateReadingTime(body);
+
+    let featuredFormula = fm.featuredFormula || null;
+    if (!featuredFormula) {
+      const m = body.match(/\$\$([\s\S]+?)\$\$/);
+      if (m) {
+        const f = m[1].replace(/\s+/g, " ").trim();
+        if (f.length <= 80) featuredFormula = f;
+      }
+    }
+
+    return {
+      slug: (fm.slug || stem).toString().trim(),
+      file,
+      title: (fm.title || stem).toString().trim(),
+      date: (fm.date || new Date().toISOString().slice(0, 10)).toString().trim(),
+      category: (fm.category || "notes").toString().trim(),
+      tags,
+      excerpt,
+      readingTime,
+      featuredFormula
+    };
+  }
+
+  function extractFirstParagraph(body) {
+    const lines = body.split(/\r?\n/);
+    const para = [];
+    let inFence = false;
+    for (const line of lines) {
+      const t = line.trim();
+      if (/^```/.test(t)) { inFence = !inFence; continue; }
+      if (inFence) continue;
+      if (!t) { if (para.length) break; else continue; }
+      if (/^#{1,6}\s/.test(t) || /^>/.test(t) || /^[-*+]\s/.test(t)
+          || /^\d+\.\s/.test(t) || /^\$\$/.test(t) || /^<.+>/.test(t)
+          || /^---+$/.test(t) || /^\|/.test(t)) continue;
+      para.push(t);
+      if (para.join(" ").length > 200) break;
+    }
+    let s = para.join(" ")
+      .replace(/!\[([^\]]*)\]\([^)]+\)/g, "")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_m, a, b) => b || a)
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .replace(/\$([^$]+)\$/g, "$1")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (s.length > 140) s = s.slice(0, 140).trimEnd() + "…";
+    return s;
+  }
+
+  function estimateReadingTime(body) {
+    const cleaned = body.replace(/```[\s\S]*?```/g, "").replace(/\$\$[\s\S]*?\$\$/g, "");
+    const cn = (cleaned.match(/[\u4e00-\u9fa5]/g) || []).length;
+    const en = cleaned.replace(/[\u4e00-\u9fa5]/g, " ").split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(cn / 300 + en / 200));
   }
 
   LuvsicBlog.loadConfig = loadConfig;
@@ -117,20 +212,36 @@
   LuvsicBlog.formatDate = formatDate;
 
   /* ------------------------------------------------------------
-     Frontmatter parser (for .md files)
-     Returns { data: {...}, body: "..." }
+     Frontmatter parser
+     Supports: scalar, "quoted", [inline, list], multiline:
+                                                  - list
+                                                  - items
      ------------------------------------------------------------ */
   function parseFrontmatter(text) {
     const match = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
     if (!match) return { data: {}, body: text };
     const body = text.slice(match[0].length);
     const data = {};
-    match[1].split(/\r?\n/).forEach((line) => {
-      const kv = line.match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
-      if (!kv) return;
+    const lines = match[1].split(/\r?\n/);
+
+    for (let i = 0; i < lines.length; i++) {
+      const kv = lines[i].match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+      if (!kv) continue;
       const key = kv[1].trim();
       let value = kv[2].trim();
-      // YAML-ish list: [a, b, c]
+
+      if (value === "" && i + 1 < lines.length && /^\s*-\s+/.test(lines[i + 1])) {
+        const list = [];
+        while (i + 1 < lines.length && /^\s*-\s+/.test(lines[i + 1])) {
+          i++;
+          const item = lines[i].replace(/^\s*-\s+/, "").trim()
+            .replace(/^["']|["']$/g, "");
+          if (item) list.push(item);
+        }
+        data[key] = list;
+        continue;
+      }
+
       if (/^\[.*\]$/.test(value)) {
         value = value.slice(1, -1).split(",")
           .map((v) => v.trim().replace(/^["']|["']$/g, ""))
@@ -139,7 +250,7 @@
         value = value.slice(1, -1);
       }
       data[key] = value;
-    });
+    }
     return { data, body };
   }
 
@@ -147,12 +258,6 @@
 
   /* ------------------------------------------------------------
      Markdown → HTML
-     Handles:
-       - Obsidian [[wiki-links]]
-       - > [!note] / > [!warning] callouts
-       - [^footnote] references + definitions
-       - KaTeX $...$ / $$...$$  (protected before marked)
-       - Fenced code with copy button
      ------------------------------------------------------------ */
   function configureMarked() {
     if (!window.marked) return;
@@ -214,7 +319,6 @@
         const headingName = heading ? heading.slice(1).trim() : "";
         const label = (alias || (headingName ? `${pageName} § ${headingName}` : pageName)).trim();
 
-        // try resolve to actual post
         const key = slugify(pageName);
         const matchedSlug = postsBySlugifiedTitle && postsBySlugifiedTitle[key];
         const url = matchedSlug
@@ -319,14 +423,12 @@
   function enhanceRenderedContent(root) {
     root = root || document.body;
 
-    // code highlight
     if (window.hljs) {
       root.querySelectorAll("pre code").forEach((block) => {
         try { hljs.highlightElement(block); } catch (_) {}
       });
     }
 
-    // KaTeX
     if (window.renderMathInElement) {
       renderMathInElement(root, {
         delimiters: [
@@ -340,7 +442,6 @@
       });
     }
 
-    // Copy buttons (event-delegated installation)
     if (!root._copyBound) {
       root.addEventListener("click", (e) => {
         const btn = e.target.closest(".copy-code, .copy-btn");
@@ -373,7 +474,7 @@
   LuvsicBlog.enhanceRenderedContent = enhanceRenderedContent;
 
   /* ------------------------------------------------------------
-     Topbar rendering (brand + nav + theme toggle)
+     Topbar rendering
      ------------------------------------------------------------ */
   function renderTopbar(mountSelector, config) {
     const mount = typeof mountSelector === "string"
@@ -423,3 +524,4 @@
   /* Expose */
   window.LuvsicBlog = LuvsicBlog;
 }());
+
