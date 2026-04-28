@@ -690,6 +690,125 @@ a:hover { opacity: 0.82; }
 }
 
 /* ============================================================
+   文章双栏布局 — 正文 + 目录侧栏
+   ============================================================ */
+.post-layout {
+  max-width: calc(var(--content-w) + 270px);
+  margin: 40px auto 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.article-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-layout .article-shell {
+  margin: 0 0 60px;
+  max-width: none;
+}
+
+.post-layout .post-nav {
+  margin: 0 0 48px;
+  max-width: none;
+}
+
+/* TOC 目录侧栏 */
+.toc-sidebar {
+  width: 230px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px;
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  padding-left: 20px;
+  border-left: 1px solid var(--line);
+  transition: border-color var(--transition);
+}
+
+.toc-sidebar .toc-title {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  color: var(--muted-2);
+  margin: 0 0 16px;
+}
+
+.toc-sidebar .toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-sidebar .toc-item {
+  margin-bottom: 0;
+}
+
+.toc-sidebar .toc-item a {
+  display: block;
+  padding: 5px 0;
+  font-size: 0.82rem;
+  font-family: var(--font-sans);
+  color: var(--muted);
+  text-decoration: none;
+  line-height: 1.45;
+  border-left: 2px solid transparent;
+  padding-left: 10px;
+  margin-left: -12px;
+  transition: color var(--transition), border-color var(--transition);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.toc-sidebar .toc-item a:hover {
+  color: var(--accent);
+  opacity: 1;
+}
+
+.toc-sidebar .toc-item.active a {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+
+.toc-sidebar .toc-item.toc-h2 a {
+  padding-left: 16px;
+  font-size: 0.80rem;
+}
+
+.toc-sidebar .toc-item.toc-h3 a {
+  padding-left: 28px;
+  font-size: 0.78rem;
+}
+
+.toc-sidebar .toc-item.toc-h1 a {
+  padding-left: 4px;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 840px) {
+  .toc-sidebar {
+    display: none;
+  }
+  .post-layout {
+    display: block;
+    max-width: var(--content-w);
+  }
+  .post-layout .article-shell {
+    margin: 0 auto 60px;
+    max-width: var(--content-w);
+  }
+  .post-layout .post-nav {
+    margin: 0 auto 48px;
+    max-width: var(--content-w);
+  }
+}
+
+/* ============================================================
    Prose 正文
    ============================================================ */
 .prose p,

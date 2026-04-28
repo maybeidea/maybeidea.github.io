@@ -27,11 +27,18 @@
   <div class="site-shell">
     <header class="topbar" id="site-topbar"></header>
 
-    <article class="article-shell" id="article-shell">
-      <div class="loading-state">Loading note…</div>
-    </article>
-
-    <nav class="post-nav" id="post-nav" aria-label="Adjacent notes"></nav>
+    <div class="post-layout" id="post-layout">
+      <div class="article-col">
+        <article class="article-shell" id="article-shell">
+          <div class="loading-state">Loading note…</div>
+        </article>
+        <nav class="post-nav" id="post-nav" aria-label="Adjacent notes"></nav>
+      </div>
+      <aside class="toc-sidebar" id="toc-sidebar">
+        <div class="toc-title">目录</div>
+        <ul class="toc-list" id="toc-list"></ul>
+      </aside>
+    </div>
 
     <footer class="site-footer" id="site-footer"></footer>
   </div>
@@ -119,6 +126,76 @@
 
         // enhance (highlight + KaTeX + copy bindings)
         LuvsicBlog.enhanceRenderedContent($("#article-shell"));
+
+        // Build TOC from prose headings
+        (function buildTOC() {
+          const prose = $("#prose-body");
+          if (!prose) return;
+          const hTags = prose.querySelectorAll("h1, h2, h3");
+          if (hTags.length < 1) { $("#toc-sidebar").style.display = "none"; return; }
+
+          const tocList = $("#toc-list");
+          const tocData = [];
+
+          hTags.forEach((el) => {
+            const id = el.id;
+            const text = el.textContent.trim();
+            if (!id || !text) return;
+            const tag = el.tagName;
+            const li = document.createElement("li");
+            let levelClass = "";
+            if (tag === "H2") levelClass = "toc-h2";
+            else if (tag === "H3") levelClass = "toc-h3";
+            li.className = "toc-item" + (levelClass ? " " + levelClass : "");
+            const a = document.createElement("a");
+            a.href = "#" + id;
+            a.textContent = text;
+            a.addEventListener("click", function (e) {
+              const target = document.getElementById(id);
+              if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+                history.replaceState(null, "", "#" + id);
+              }
+            });
+            li.appendChild(a);
+            tocList.appendChild(li);
+            tocData.push({ el, id });
+          });
+
+          function updateActive() {
+            const scrollY = window.scrollY + 120;
+            let current = null;
+            for (let i = 0; i < tocData.length; i++) {
+              if (tocData[i].el.offsetTop <= scrollY) {
+                current = tocData[i];
+              } else {
+                break;
+              }
+            }
+            tocList.querySelectorAll(".toc-item").forEach(function (it) {
+              it.classList.remove("active");
+            });
+            if (current) {
+              var activeLi = tocList.querySelector('a[href="#' + current.id + '"]');
+              if (activeLi && activeLi.parentElement) {
+                activeLi.parentElement.classList.add("active");
+              }
+            }
+          }
+
+          var ticking = false;
+          window.addEventListener("scroll", function () {
+            if (!ticking) {
+              requestAnimationFrame(function () {
+                updateActive();
+                ticking = false;
+              });
+              ticking = true;
+            }
+          }, { passive: true });
+          updateActive();
+        })();
 
         // prev / next nav
         const prev = posts[idx + 1]; // older
