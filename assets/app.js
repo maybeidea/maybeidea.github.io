@@ -119,14 +119,7 @@
     let readingTime = Number(fm.readingTime);
     if (!readingTime || isNaN(readingTime)) readingTime = estimateReadingTime(body);
 
-    let featuredFormula = fm.featuredFormula || null;
-    if (!featuredFormula) {
-      const m = body.match(/\$\$([\s\S]+?)\$\$/);
-      if (m) {
-        const f = m[1].replace(/\s+/g, " ").trim();
-        if (f.length <= 80) featuredFormula = f;
-      }
-    }
+    const featuredFormula = fm.featuredFormula || null;
 
     return {
       slug: (fm.slug || stem).toString().trim(),
@@ -445,9 +438,14 @@
     const protectedMath = protectMath(markdown);
     let text = protectedMath.text;
 
+    const protectedFences = protectCodeFences(text);
+    text = protectedFences.text;
+
     text = transformWikiLinks(text, options.postsBySlugifiedTitle);
     text = transformFootnotes(text);
     text = transformCallouts(text);
+
+    text = restoreCodeFences(text, protectedFences.tokens);
 
     const parsed = marked.parse(text);
     const restored = restoreMath(parsed, protectedMath.tokens);
