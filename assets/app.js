@@ -305,6 +305,51 @@
     return { text, tokens };
   }
 
+  function protectCodeFences(markdown) {
+    const tokens = [];
+    const lines = markdown.split('\n');
+    const out = [];
+    let inFence = false;
+    let fenceMarker = '';
+    let buf = [];
+
+    for (const line of lines) {
+      if (!inFence) {
+        const m = line.match(/^(`{3,})([^`]*)$/);
+        if (m) {
+          inFence = true;
+          fenceMarker = m[1];
+          buf = [line];
+        } else {
+          out.push(line);
+        }
+      } else {
+        buf.push(line);
+        const m = line.match(/^(`{3,})\s*$/);
+        if (m && m[1] === fenceMarker) {
+          inFence = false;
+          const key = '@@FENCE_TOKEN_' + tokens.length + '@@';
+          tokens.push(buf.join('\n'));
+          out.push(key);
+          buf = [];
+          fenceMarker = '';
+        }
+      }
+    }
+    // unclosed fence: just append remaining buffer
+    if (buf.length) out.push(...buf);
+    return { text: out.join('\n'), tokens: tokens };
+  }
+
+  function restoreCodeFences(text, tokens) {
+    return tokens.reduce(
+      function(output, value, index) {
+        return output.split('@@FENCE_TOKEN_' + index + '@@').join(value);
+      },
+      text
+    );
+  }
+
   function restoreMath(html, tokens) {
     return tokens.reduce(
       (output, value, index) => output.split(`@@MATH_TOKEN_${index}@@`).join(escapeHtml(value)),
