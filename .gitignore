@@ -1,0 +1,11 @@
+# AI agent workspaces
+.opencode/
+.sisyphus/
+.marscode/
+
+# AI agent documentation
+AGENTS.md
+
+# Sync automation
+sync.py
+posts/.sync-track.json
