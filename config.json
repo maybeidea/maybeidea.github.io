@@ -40,6 +40,18 @@
       "name": "Notes",
       "description": "Loose observations and reading marginalia.",
       "accent": "amber"
+    },
+    {
+      "id": "linux",
+      "name": "Linux",
+      "description": "Command-line notes and system administration.",
+      "accent": "accent"
+    },
+    {
+      "id": "note-management",
+      "name": "笔记管理",
+      "description": "Note-taking workflows and knowledge management.",
+      "accent": "amber"
     }
   ],
 
