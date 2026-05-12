@@ -10,6 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+  <!-- 展示字体：EB Garamond（拉丁标题） -->
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
   <!-- 中文字体：思源宋体 + 思源黑体（Google Fonts 按字重分包） -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <!-- 中文字体：霞鹜文楷 屏幕阅读版（jsDelivr 分包 CDN，按需加载） -->
@@ -36,10 +38,11 @@
           <h1 id="hero-title"></h1>
           <p id="hero-desc"></p>
         </div>
-        <!-- <aside class="hero-note">
-          <div class="label">Intro</div>
-          <p id="hero-note-desc"></p>
-        </aside> -->
+        <aside class="hero-note" data-hero-note>
+          <span class="label">Note</span>
+          <p data-quote-text>Loading...</p>
+          <cite data-quote-source></cite>
+        </aside>
       </div>
     </section>
 

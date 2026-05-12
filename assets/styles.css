@@ -5,30 +5,30 @@
 
 :root,
 [data-theme="light"] {
-  --bg: #f4f1eb;
-  --bg-soft: #efebe4;
+  --bg: #F8F4ED;
+  --bg-soft: #F2EDE4;
   --bg-gradient-1: rgba(122, 142, 154, 0.12);
   --bg-gradient-2: rgba(169, 142, 102, 0.10);
   --bg-gradient-start: #f5f1ea;
   --bg-gradient-end: #f0ebe4;
 
-  --paper: rgba(255, 252, 246, 0.72);
-  --card: rgba(255, 250, 243, 0.78);
-  --card-hover: rgba(255, 250, 243, 0.92);
+  --paper: rgba(250, 246, 238, 0.72);
+  --card: rgba(248, 242, 232, 0.78);
+  --card-hover: rgba(248, 242, 232, 0.94);
 
-  --line: rgba(74, 84, 93, 0.16);
-  --line-soft: rgba(74, 84, 93, 0.08);
-  --line-strong: rgba(74, 84, 93, 0.24);
+  --line: rgba(28, 24, 21, 0.12);
+  --line-soft: rgba(28, 24, 21, 0.06);
+  --line-strong: rgba(28, 24, 21, 0.18);
 
-  --text: #2f3438;
-  --text-soft: #3c4347;
-  --muted: #697279;
-  --muted-2: #8a918f;
+  --text: #1C1815;
+  --text-soft: #4A433E;
+  --muted: #6B6258;
+  --muted-2: #9C9287;
 
-  --accent: #58707d;
+  --accent: #7A9BAE;
   --accent-soft: rgba(88, 112, 125, 0.10);
   --accent-border: rgba(88, 112, 125, 0.22);
-  --amber: #8b6d49;
+  --amber: #C4825A;
   --amber-soft: rgba(139, 109, 73, 0.12);
   --amber-border: rgba(139, 109, 73, 0.26);
 
@@ -55,30 +55,30 @@
 }
 
 [data-theme="dark"] {
-  --bg: #0D0D0D;
-  --bg-soft: #121212;
+  --bg: #1A1412;
+  --bg-soft: #1F1815;
   --bg-gradient-1: rgba(217, 122, 86, 0.10);
   --bg-gradient-2: rgba(243, 167, 56, 0.06);
   --bg-gradient-start: #121212;
   --bg-gradient-end: #0D0D0D;
 
-  --paper: rgba(26, 26, 26, 0.56);
-  --card: rgba(26, 26, 26, 0.62);
+  --paper: rgba(38, 31, 26, 0.56);
+  --card: rgba(38, 31, 26, 0.62);
   --card-hover: rgba(30, 30, 30, 0.78);
 
   --line: rgba(255, 255, 255, 0.08);
   --line-soft: rgba(255, 255, 255, 0.04);
   --line-strong: rgba(255, 255, 255, 0.16);
 
-  --text: #E5E5E5;
+  --text: #EDE3D5;
   --text-soft: rgba(229, 229, 229, 0.88);
   --muted: #A3A3A3;
   --muted-2: #737373;
 
-  --accent: #D97A56;
+  --accent: #D4946E;
   --accent-soft: rgba(217, 122, 86, 0.12);
   --accent-border: rgba(217, 122, 86, 0.36);
-  --amber: #F3A738;
+  --amber: #D4B454;
   --amber-soft: rgba(243, 167, 56, 0.12);
   --amber-border: rgba(243, 167, 56, 0.36);
 
@@ -104,12 +104,63 @@
   --selection-fg: #16110f;
 }
 
+/* === Color Aliases === */
 :root {
+  --color-accent-primary: var(--accent);
+  --color-accent-secondary: var(--amber);
+  --color-bg-page: var(--bg);
+  --color-bg-card: var(--card);
+  --color-text-primary: var(--text);
+  --color-text-secondary: var(--text-soft);
+  --color-text-muted: var(--muted);
+
   --radius-lg: 24px;
   --radius-md: 18px;
   --radius-sm: 12px;
   --content-w: 760px;
   --transition: 260ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* === Design Token Scales === */
+  /* Space scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --space-9: 3.5rem;
+  --space-10: 4rem;
+  --space-11: 5rem;
+  --space-12: 6rem;
+  --space-13: 8rem;
+  --space-14: 10rem;
+  --space-15: 12rem;
+  --space-16: 16rem;
+
+  /* Type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 3.25rem;
+  --text-5xl: 4.5rem;
+
+  /* Animation tokens */
+  --ease-breath: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-float: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-slow: 600ms;
+  --duration-medium: 400ms;
+  --duration-fast: 250ms;
+
+  /* Border tokens */
+  --border-subtle: var(--line-soft);
+  --border-strong: var(--line-strong);
+
    /* ===== 字体栈 — 中文优先 =====
      想换风格？只改 --font-serif 那一行：
        A. 楷体 / 笔记本感（默认）：LXGW WenKai Screen 在前
@@ -119,6 +170,10 @@
   "Noto Serif SC", Lora,
   "LXGW WenKai Screen", "LXGW WenKai",
   "Source Han Serif SC", Georgia, serif;
+
+  --font-display:
+    "EB Garamond", "Noto Serif SC", "Lora", "LXGW WenKai Screen",
+    Georgia, serif;
 
   --font-sans:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -166,12 +221,14 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
+  will-change: opacity;
   opacity: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   background-size: 180px 180px;
   mix-blend-mode: soft-light;
   transition: opacity var(--transition);
 }
+[data-theme="light"] body::after { opacity: 0.03; }
 [data-theme="dark"] body::after { opacity: 0.035; }
 
 ::selection { background: var(--selection-bg); color: var(--selection-fg); }
@@ -305,7 +362,7 @@ a:hover { opacity: 0.82; }
 
 .hero h1 {
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(2.5rem, 5vw, 5rem);
   line-height: 1.06;
@@ -370,7 +427,7 @@ a:hover { opacity: 0.82; }
 }
 .section-title h2 {
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: clamp(1.6rem, 2.2vw, 2.2rem);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -518,7 +575,7 @@ a:hover { opacity: 0.82; }
 
 .post-card h3 {
   margin: 0 0 12px;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: 1.42rem;
   font-weight: 500;
   line-height: 1.22;
@@ -609,7 +666,7 @@ a:hover { opacity: 0.82; }
 
 .article-head h1 {
   margin: 0 0 14px;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(2rem, 3vw, 3rem);
   line-height: 1.14;
@@ -821,7 +878,7 @@ a:hover { opacity: 0.82; }
 }
 
 .prose h2, .prose h3, .prose h4 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-weight: 500;
   letter-spacing: -0.02em;
   line-height: 1.25;
