@@ -126,6 +126,8 @@
         $("#hero-desc").textContent = config.site.description;
 
         const posts = postsIndex.posts;
+        LuvsicBlog.loadHeroNote(posts);
+
         $("#posts-sub").textContent = `${posts.length} notes · filter by category below`;
 
         // ===== category pills =====

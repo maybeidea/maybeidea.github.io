@@ -174,6 +174,62 @@
   LuvsicBlog.loadPostsIndex = loadPostsIndex;
 
   /* ------------------------------------------------------------
+     Hero note — random quote / featured formula
+     ------------------------------------------------------------ */
+  async function loadHeroNote(posts) {
+    const heroNote = document.querySelector(".hero-note");
+    if (!heroNote) return;
+
+    const textEl = heroNote.querySelector("[data-quote-text]");
+    const srcEl  = heroNote.querySelector("[data-quote-source]");
+
+    const cached = sessionStorage.getItem("luvsic-hero-note");
+    if (cached) {
+      try {
+        const item = JSON.parse(cached);
+        if (textEl) textEl.textContent = item.text;
+        if (srcEl)  srcEl.textContent  = item.source || "";
+        return;
+      } catch (_) {}
+    }
+
+    let pool = [];
+
+    if (Array.isArray(posts) && posts.length) {
+      const ff = posts
+        .filter((p) => p.featuredFormula)
+        .map((p) => ({ text: p.featuredFormula, source: p.title }));
+      pool = pool.concat(ff);
+    }
+
+    try {
+      const data = await loadJSON("quotes.json");
+      if (data && Array.isArray(data.quotes)) {
+        pool = pool.concat(data.quotes);
+      }
+    } catch (err) {
+      console.warn("[hero-note] quotes.json unavailable:", err.message);
+    }
+
+    if (!pool.length) {
+      heroNote.style.display = "none";
+      return;
+    }
+
+    const item = pool[Math.floor(Math.random() * pool.length)];
+    sessionStorage.setItem("luvsic-hero-note", JSON.stringify({
+      text:   item.text,
+      source: item.source || "",
+      date:   new Date().toDateString()
+    }));
+
+    if (textEl) textEl.textContent = item.text;
+    if (srcEl)  srcEl.textContent  = item.source || "";
+  }
+
+  LuvsicBlog.loadHeroNote = loadHeroNote;
+
+  /* ------------------------------------------------------------
      Utilities
      ------------------------------------------------------------ */
   const HTML_ESCAPE = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
