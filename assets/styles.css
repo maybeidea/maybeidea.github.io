@@ -421,6 +421,26 @@ a:hover { opacity: 0.82; }
   font-family: var(--font-serif);
 }
 
+.hero-note-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.hero-note-link:hover {
+  opacity: 0.82;
+}
+
+.hero-note-link.no-link {
+  cursor: default;
+}
+
+.hero-note-link.no-link:hover {
+  opacity: 1;
+}
+
 .ambient-line {
   height: 1px;
   background: linear-gradient(90deg,

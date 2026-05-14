@@ -6,11 +6,13 @@
     },
     {
       "text": "Simplicity is the ultimate sophistication.",
-      "source": "Leonardo da Vinci"
+      "source": "Leonardo da Vinci",
+      "slug": "生日问题里的直觉"
     },
     {
       "text": "The space between the notes is as important as the notes themselves.",
-      "source": "Claude Debussy"
+      "source": "Claude Debussy",
+      "url": "https://en.wikipedia.org/wiki/Claude_Debussy"
     },
     {
       "text": "Quiet the mind and the soul will speak.",
@@ -18,7 +20,8 @@
     },
     {
       "text": "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.",
-      "source": "Antoine de Saint-Exupéry"
+      "source": "Antoine de Saint-Exupéry",
+      "slug": "markdown语法速查"
     },
     {
       "text": "We are all just passing through. Our purpose here is to observe, to learn, to grow, to love — and then we return home.",
@@ -26,7 +29,8 @@
     },
     {
       "text": "In the middle of difficulty lies opportunity.",
-      "source": "Albert Einstein"
+      "source": "Albert Einstein",
+      "url": "https://en.wikipedia.org/wiki/Albert_Einstein"
     },
     {
       "text": "The quieter you become, the more you can hear.",

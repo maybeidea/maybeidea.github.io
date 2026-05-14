@@ -120,6 +120,8 @@
     if (!readingTime || isNaN(readingTime)) readingTime = estimateReadingTime(body);
 
     const featuredFormula = fm.featuredFormula || null;
+    const quote = (fm.quote || "").trim();
+    const quoteLink = (fm.quoteLink || "").trim();
 
     return {
       slug: (fm.slug || stem).toString().trim(),
@@ -130,7 +132,9 @@
       tags,
       excerpt,
       readingTime,
-      featuredFormula
+      featuredFormula,
+      quote,
+      quoteLink
     };
   }
 
@@ -182,13 +186,41 @@
 
     const textEl = heroNote.querySelector("[data-quote-text]");
     const srcEl  = heroNote.querySelector("[data-quote-source]");
+    const linkEl = heroNote.querySelector(".hero-note-link");
 
     const cached = sessionStorage.getItem("luvsic-hero-note");
     if (cached) {
       try {
         const item = JSON.parse(cached);
-        if (textEl) textEl.textContent = item.text;
-        if (srcEl)  srcEl.textContent  = item.source || "";
+        if (textEl) {
+          const safeHtml = escapeHtml(item.text);
+          textEl.innerHTML = safeHtml;
+        }
+        if (srcEl) srcEl.textContent = item.source || "";
+        if (linkEl) {
+          if (item.link) {
+            const href = item.link.startsWith("http")
+              ? item.link
+              : `post.html?slug=${encodeURIComponent(item.link)}`;
+            linkEl.href = href;
+            linkEl.classList.remove("no-link");
+          } else {
+            linkEl.href = "#";
+            linkEl.classList.add("no-link");
+          }
+        }
+        if (window.renderMathInElement) {
+          renderMathInElement(heroNote, {
+            delimiters: [
+              { left: "$$",  right: "$$",  display: true  },
+              { left: "$",   right: "$",   display: false },
+              { left: "\\(", right: "\\)", display: false },
+              { left: "\\[", right: "\\]", display: true  }
+            ],
+            throwOnError: false,
+            strict: "ignore"
+          });
+        }
         return;
       } catch (_) {}
     }
@@ -196,16 +228,21 @@
     let pool = [];
 
     if (Array.isArray(posts) && posts.length) {
-      const ff = posts
-        .filter((p) => p.featuredFormula)
-        .map((p) => ({ text: p.featuredFormula, source: p.title }));
-      pool = pool.concat(ff);
+      const postQuotes = posts
+        .filter((p) => p.quote)
+        .map((p) => ({ text: p.quote, source: p.title, link: p.quoteLink || null }));
+      pool = pool.concat(postQuotes);
     }
 
     try {
       const data = await loadJSON("quotes.json");
       if (data && Array.isArray(data.quotes)) {
-        pool = pool.concat(data.quotes);
+        const qEntries = data.quotes.map((q) => ({
+          text:   q.text,
+          source: q.source,
+          link:   q.slug || q.url || null
+        }));
+        pool = pool.concat(qEntries);
       }
     } catch (err) {
       console.warn("[hero-note] quotes.json unavailable:", err.message);
@@ -220,11 +257,40 @@
     sessionStorage.setItem("luvsic-hero-note", JSON.stringify({
       text:   item.text,
       source: item.source || "",
+      link:   item.link || null,
       date:   new Date().toDateString()
     }));
 
-    if (textEl) textEl.textContent = item.text;
-    if (srcEl)  srcEl.textContent  = item.source || "";
+    if (textEl) {
+      const safeHtml = escapeHtml(item.text);
+      textEl.innerHTML = safeHtml;
+    }
+    if (srcEl) srcEl.textContent = item.source || "";
+    if (linkEl) {
+      if (item.link) {
+        const href = item.link.startsWith("http")
+          ? item.link
+          : `post.html?slug=${encodeURIComponent(item.link)}`;
+        linkEl.href = href;
+        linkEl.classList.remove("no-link");
+      } else {
+        linkEl.href = "#";
+        linkEl.classList.add("no-link");
+      }
+    }
+
+    if (window.renderMathInElement) {
+      renderMathInElement(heroNote, {
+        delimiters: [
+          { left: "$$",  right: "$$",  display: true  },
+          { left: "$",   right: "$",   display: false },
+          { left: "\\(", right: "\\)", display: false },
+          { left: "\\[", right: "\\]", display: true  }
+        ],
+        throwOnError: false,
+        strict: "ignore"
+      });
+    }
   }
 
   LuvsicBlog.loadHeroNote = loadHeroNote;
