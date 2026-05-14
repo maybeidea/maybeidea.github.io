@@ -178,7 +178,7 @@
   LuvsicBlog.loadPostsIndex = loadPostsIndex;
 
   /* ------------------------------------------------------------
-     Hero note — random quote / featured formula
+     Hero note — random quote from post.quote or quotes.json
      ------------------------------------------------------------ */
   async function loadHeroNote(posts) {
     const heroNote = document.querySelector(".hero-note");
