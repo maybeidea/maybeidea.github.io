@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,6 +25,22 @@
   <link id="hljs-dark"  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/atom-one-dark.min.css" disabled />
 
   <link rel="stylesheet" href="assets/styles.css" />
+
+  <script>
+    (function () {
+      var theme;
+      try { theme = localStorage.getItem('luvsic-theme'); } catch (_) {}
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+      var hljsLight = document.getElementById('hljs-light');
+      var hljsDark  = document.getElementById('hljs-dark');
+      if (hljsLight) hljsLight.disabled = (theme !== 'light');
+      if (hljsDark)  hljsDark.disabled  = (theme !== 'dark');
+    })();
+  </script>
 </head>
 <body>
   <div class="site-shell">
