@@ -30,8 +30,8 @@
       "accent": "accent"
     },
     {
-      "id": "code",
-      "name": "Code",
+      "id": "c++",
+      "name": "C++",
       "description": "Notebook fragments and late-night experiments.",
       "accent": "amber"
     },
@@ -52,6 +52,12 @@
       "name": "笔记管理",
       "description": "Note-taking workflows and knowledge management.",
       "accent": "amber"
+    },
+    {
+      "id": "opencv",
+      "name": "OpenCV",
+      "description": "Computer vision experiments and image processing notes.",
+      "accent": "accent"
     }
   ],
 

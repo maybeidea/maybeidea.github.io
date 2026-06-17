@@ -9,3 +9,6 @@ AGENTS.md
 # Sync automation
 sync.py
 posts/.sync-track.json
+
+# Writing tools
+WRITING_PROMPT.md
