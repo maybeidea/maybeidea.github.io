@@ -87,7 +87,7 @@ sudo reboot
 
 ---
 
-# 2. 优先优化项一：关闭网络等待
+# 优先优化项一：关闭网络等待
 
 NetworkManager-wait-online 是一个 **systemd 服务**，用于确保网络完全配置并上线后，才允许依赖网络的其他服务启动，桌面端 Ubuntu 通常不需要等待网络完全在线后再进入系统。
 
@@ -146,7 +146,7 @@ sudo systemctl disable ModemManager.service
 
 ---
 
-# 3. 优先优化项三：优化 BIOS / UEFI 阶段
+# 优先优化项三：优化 BIOS / UEFI 阶段
 
 当前 `firmware` 阶段耗时 17.400 秒，说明 BIOS / UEFI 自检偏慢。这一段不是 Ubuntu 控制的，主要在 BIOS 中优化。
 
@@ -165,7 +165,7 @@ systemctl reboot --firmware-setup
 
 ---
 
-# 4. 缩短 GRUB 等待时间
+# 缩短 GRUB 等待时间
 
 编辑 GRUB：
 
@@ -190,7 +190,7 @@ sudo update-grub
 
 ---
 
-# 5. Snap 相关优化
+# Snap 相关优化
 
 当前 Snap 相关服务耗时：
 

@@ -625,7 +625,7 @@ average rate: 400
 
 # 注意事项
 
-## 15.1 lowlatency 不是硬实时
+## lowlatency 不是硬实时
 
 `linux-lowlatency` 能降低延迟，但不能保证硬实时。  
 这套方案能减少 ROS 2 timer / executor 带来的抖动，但最终仍然会受到内核、驱动、中断、DDS、TF、publish 的影响。
