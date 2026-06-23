@@ -1,5 +1,6 @@
 {
   "posts": [
+    "四元数与三维旋转.md",
     "Ubuntu 22.04 下 ROS 2 Timer 频率波动优化.md",
     "Ubuntu 22.04 桌面端开机速度优化总结.md",
     "markdown语法速查.md",

@@ -58,6 +58,12 @@
       "name": "OpenCV",
       "description": "Computer vision experiments and image processing notes.",
       "accent": "accent"
+    },
+    {
+      "id": "control-theory",
+      "name": "控制论",
+      "description": "State estimation, optimal control, and feedback systems.",
+      "accent": "amber"
     }
   ],
 
